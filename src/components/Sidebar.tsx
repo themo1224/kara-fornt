@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-type NavItem = {
-  key: string;
-  label: string;
-  icon: JSX.Element;
-  badge?: number;
+const BRAND = {
+  light: "#FDE7B3",
+  yellow: "#FFC50F",
+  green: "#63A361",
+  olive: "#5B532C",
+  darkBtn: "#5B532C",
 };
+
+type NavItem = { key: string; label: string; badge?: number; icon?: JSX.Element };
 
 export default function Sidebar({
   items,
@@ -14,133 +17,255 @@ export default function Sidebar({
 }: {
   items: NavItem[];
   activeKey?: string;
-  onNavigate: (key: string) => void;
+  onNavigate: (k: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setCollapsed(true);
+      }
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Inline styles with responsive considerations
+  const asideStyle: React.CSSProperties = {
+    width: collapsed ? 72 : 288,
+    height: "100vh",
+    background: "#FFFFFF", // Changed to white background
+    boxShadow: "0 2px 8px rgba(91,83,44,0.1)",
+    position: "fixed",
+    right: isMobile && collapsed ? -72 : 0, // Hide when mobile and collapsed
+    top: 0,
+    bottom: 0,
+    display: "flex",
+    flexDirection: "column",
+    padding: "24px 16px",
+    justifyContent: "space-between",
+    zIndex: 1000,
+    transition: "all 0.3s ease",
+  };
+
+  const stripeStyle: React.CSSProperties = {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 6,
+    background: `linear-gradient(to bottom, ${BRAND.green}, ${BRAND.yellow}88)`, // Gradient stripe
+    borderTopRightRadius: 6,
+    borderBottomRightRadius: 6,
+  };
 
   return (
-    <aside
-      dir="rtl"
-      className={`flex-shrink-0 h-screen transition-all duration-300 ease-in-out shadow-sm
-        ${collapsed ? "w-20" : "w-72"} bg-white relative flex flex-col`}
-      aria-label="Main navigation"
-    >
-      {/* right accent stripe */}
-      <div
-        className="absolute right-0 top-0 bottom-0 w-1"
-        style={{ background: "linear-gradient(180deg,#16a34a,#059669)" }}
-        aria-hidden
-      />
+    <>
+      {/* Mobile overlay */}
+      {isMobile && !collapsed && (
+        <div
+          onClick={() => setCollapsed(true)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 999,
+          }}
+        />
+      )}
 
-      {/* Header / Logo */}
-      <div className="flex items-center justify-between px-4 py-4 border-b">
-        <div className={`flex items-center gap-3 ${collapsed ? "justify-center w-full" : ""}`}>
-          <div
-            className="flex items-center justify-center rounded-full w-12 h-12"
-            style={{ background: "#10b981" }}
-          >
-            {/* place your white logo here; adjust src */}
-            <img src="/logo-white.svg" alt="logo" className="w-7 h-7" />
-          </div>
+      <aside style={asideStyle} aria-label="Main navigation" dir="rtl">
+        <div style={stripeStyle} />
 
-          {!collapsed && (
-            <div>
-              <div className="text-gray-800 font-semibold text-base leading-none">کاوش هوشمند کارا</div>
-              <div className="text-xs text-gray-500">پلتفرم مدیریت سالن‌ها</div>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6 pl-1">
+          <div className="flex items-center gap-3">
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 16,
+                background: `linear-gradient(135deg, ${BRAND.green}, ${BRAND.olive})`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: `0 6px 18px ${BRAND.green}33`,
+              }}
+            >
+              <img src="https://kara.farm/app/assets/images/logo-sm.png" alt="logo" style={{ width: 32, height: 32 }} />
             </div>
-          )}
-        </div>
 
-        {/* collapse button */}
-        <button
-          aria-expanded={!collapsed}
-          onClick={() => setCollapsed((s) => !s)}
-          title={collapsed ? "باز کردن منو" : "کوچک کردن"}
-          className="ml-2 -mr-1 rounded p-1 text-gray-500 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-200"
-        >
-          <svg
-            className={`w-5 h-5 transform transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto">
-        <ul className="py-6 flex flex-col gap-1">
-          {items.map((it) => {
-            const active = it.key === activeKey;
-            return (
-              <li key={it.key} className="px-2">
-                <button
-                  onClick={() => onNavigate(it.key)}
-                  className={`group w-full flex items-center gap-3 pr-3 pl-2 py-2 rounded-md transition
-                    ${active ? "bg-green-50 text-green-700 font-semibold" : "text-gray-700 hover:bg-gray-50"}
-                    focus:outline-none focus:ring-2 focus:ring-green-200`}
-                  title={collapsed ? it.label : undefined}
-                >
-                  {/* icon - on the right side for RTL */}
-                  <span
-                    className={`flex items-center justify-center shrink-0 w-9 h-9 rounded-md
-                      ${active ? "bg-green-100 text-green-700" : "bg-transparent text-gray-500 group-hover:bg-gray-100"}`}
-                  >
-                    {it.icon}
-                  </span>
-
-                  {/* label */}
-                  {!collapsed && (
-                    <span className="flex-1 text-right">
-                      <div className="flex items-center justify-between">
-                        <span>{it.label}</span>
-                        {it.badge ? (
-                          <span className="ml-3 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs bg-red-100 text-red-700">
-                            {it.badge}
-                          </span>
-                        ) : null}
-                      </div>
-                    </span>
-                  )}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-
-      {/* Footer utilities */}
-      <div className="px-4 py-4 border-t">
-        <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
-          <div className="flex-1">
-            {!collapsed ? (
-              <>
-                <div className="text-sm text-gray-800 font-medium">مدیر سیستم</div>
-                <div className="text-xs text-gray-500">online</div>
-              </>
-            ) : (
-              <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="12" cy="7" r="4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+            {!collapsed && (
+              <div>
+                <div style={{ fontWeight: 700, color: BRAND.olive, fontSize: 16 }}>کاوش هوشمند کارا</div>
+                <div style={{ fontSize: 13, color: BRAND.olive + "99" }}>پلتفرم مدیریت سالن‌ها</div>
               </div>
             )}
           </div>
 
-          {!collapsed && (
+          <button
+            aria-label="toggle"
+            onClick={() => setCollapsed((s) => !s)}
+            style={{
+              width: 36,
+              height: 36,
+              background: BRAND.olive + "11",
+              borderRadius: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: BRAND.olive,
+              fontSize: 18,
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              transform: collapsed ? "rotate(180deg)" : "none",
+            }}
+          >
+            {collapsed ? "›" : "‹"}
+          </button>
+        </div>
+
+        {/* Nav */}
+        <nav style={{ flex: 1, overflow: "auto", marginLeft: 6 }}>
+          <ul style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {items.map((it) => {
+              const active = it.key === activeKey;
+              return (
+                <li key={it.key}>
+                  <button
+                    onClick={() => onNavigate(it.key)}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      gap: 12,
+                      padding: "14px 16px",
+                      borderRadius: 14,
+                      background: active ? BRAND.light + "33" : "transparent",
+                      color: active ? BRAND.olive : BRAND.olive + "CC",
+                      border: active ? `2px solid ${BRAND.green}` : "2px solid transparent",
+                      boxShadow: active ? `0 6px 20px ${BRAND.green}15` : "none",
+                      textAlign: "right",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        background: BRAND.light + "22",
+                      },
+                    }}
+                  >
+                    {/* icon box */}
+                    <span
+                      style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: 12,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: active ? `linear-gradient(135deg, ${BRAND.green}22, ${BRAND.yellow}22)` : "transparent",
+                        color: active ? BRAND.green : BRAND.olive + "99",
+                        flexShrink: 0,
+                        transition: "all 0.2s ease",
+                        border: active ? `1px solid ${BRAND.green}44` : "1px solid transparent",
+                      }}
+                      aria-hidden
+                    >
+                      {it.icon ?? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      )}
+                    </span>
+
+                    {!collapsed && (
+                      <span style={{ flex: 1, fontSize: 15, fontWeight: active ? 600 : 400 }}>
+                        {it.label}
+                      </span>
+                    )}
+
+                    {/* badge */}
+                    {!collapsed && it.badge ? (
+                      <span
+                        style={{
+                          marginRight: 8,
+                          minWidth: 28,
+                          height: 28,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: 999,
+                          background: BRAND.green + "15",
+                          color: BRAND.olive,
+                          fontSize: 13,
+                          fontWeight: 600,
+                          padding: "0 8px",
+                        }}
+                      >
+                        {it.badge}
+                      </span>
+                    ) : null}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Footer */}
+        <div className="mt-6">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: collapsed ? "center" : "space-between",
+              background: BRAND.light + "11",
+              padding: "16px",
+              borderRadius: 14,
+              boxShadow: "0 4px 12px rgba(91,83,44,0.04)",
+            }}
+          >
+            {!collapsed && (
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontWeight: 600, color: BRAND.olive }}>مدیر سیستم</div>
+                <div style={{ fontSize: 12, color: BRAND.green }}>online</div>
+              </div>
+            )}
+
             <button
               onClick={() => alert("خروج")}
-              className="ml-2 px-3 py-2 rounded-md bg-gray-100 text-sm text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-200"
+              style={{
+                color: "#fff",
+                background: `linear-gradient(135deg, ${BRAND.green}, ${BRAND.olive})`,
+                padding: collapsed ? "12px" : "12px 16px",
+                borderRadius: 12,
+                border: "none",
+                cursor: "pointer",
+                fontWeight: 500,
+                transition: "all 0.2s ease",
+                minWidth: collapsed ? "40px" : "auto",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = "0.9"}
+              onMouseOut={(e) => e.currentTarget.style.opacity = "1"}
             >
-              خروج
+              {collapsed ? "←" : "خروج"}
             </button>
-          )}
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

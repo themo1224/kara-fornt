@@ -1,7 +1,27 @@
+
+:root{
+  --brand-light: #FDE7B3;
+  --brand-yellow: #FFC50F;
+  --brand-green: #63A361;
+  --brand-olive: #5B532C;
+}
 @import "tailwindcss";
 
 /* ensure the React root can fill the viewport */
-html, body, #root {
-    height: 100%;
-    margin: 0;
-  }
+html,body,#root { height:100%; margin:0; }
+
+/* app bg neutral but warm */
+body { background: #fbfbfb; }
+.btn-brand {
+  @apply inline-flex items-center justify-center font-semibold rounded-md px-4 py-2;
+  background: var(--brand-yellow);
+  color: #0b0b0b;
+}
+.btn-brand:hover { filter: brightness(.96); }
+
+/* badge on dark bg for white logo */
+.logo-badge {
+  background: var(--brand-green);
+  box-shadow: 0 6px 18px rgba(99,163,97,0.12);
+  border-radius: 9999px;
+}

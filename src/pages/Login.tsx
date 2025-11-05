@@ -37,45 +37,7 @@ export default function Login() {
   return (
     <div dir="rtl" className="w-screen h-screen flex overflow-hidden font-sans">
       {/* LEFT: large visual (hidden on small screens) */}
-      <aside
-        className="hidden lg:flex w-2/3 h-screen items-center justify-center relative"
-        style={{
-          background:
-            "radial-gradient(800px 400px at 10% 12%, rgba(255,255,255,0.03), transparent), linear-gradient(160deg, #0f766e 0%, #10b981 48%, #60e0a6 100%)",
-        }}
-        aria-hidden
-      >
-        {/* subtle concentric rings SVG (decorative) */}
-        <svg
-          className="absolute inset-0 w-full h-full opacity-10"
-          preserveAspectRatio="none"
-          viewBox="0 0 100 100"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <radialGradient id="g1" cx="30%" cy="30%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.06" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-          <rect width="100" height="100" fill="url(#g1)" />
-          <g stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" fill="none">
-            <circle cx="50" cy="50" r="20" />
-            <circle cx="50" cy="50" r="32" />
-            <circle cx="50" cy="50" r="44" />
-          </g>
-        </svg>
-
-        <div className="max-w-2xl text-center px-12 relative z-10">
-          <p className="text-white/90 text-base mb-3">به نرم افزار قاصدک خوش آمدید.</p>
-          <h1 className="text-white text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
-            محصولی از شرکت دانش بنیان <span className="text-yellow-300">کارا</span>
-          </h1>
-          <p className="text-white/90 text-lg max-w-xl mx-auto">
-            سالن‌های مرغداری خود را از راه دور مدیریت کنید و از همه چیز باخبر باشید.
-          </p>
-        </div>
-      </aside>
+    
 
       {/* RIGHT: form column */}
       <main className="w-full lg:w-1/3 h-screen bg-white flex items-center justify-center p-8">
@@ -157,6 +119,45 @@ export default function Login() {
           </div>
         </div>
       </main>
+        <aside
+        className="hidden lg:flex w-2/3 h-screen items-center justify-center relative"
+        style={{
+          background:
+            "radial-gradient(800px 400px at 10% 12%, rgba(255,255,255,0.03), transparent), linear-gradient(160deg, #0f766e 0%, #10b981 48%, #60e0a6 100%)",
+        }}
+        aria-hidden
+      >
+        {/* subtle concentric rings SVG (decorative) */}
+        <svg
+          className="absolute inset-0 w-full h-full opacity-10"
+          preserveAspectRatio="none"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <radialGradient id="g1" cx="30%" cy="30%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="100" height="100" fill="url(#g1)" />
+          <g stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" fill="none">
+            <circle cx="50" cy="50" r="20" />
+            <circle cx="50" cy="50" r="32" />
+            <circle cx="50" cy="50" r="44" />
+          </g>
+        </svg>
+
+        <div className="max-w-2xl text-center px-12 relative z-10">
+          <p className="text-white/90 text-base mb-3">به نرم افزار قاصدک خوش آمدید.</p>
+          <h1 className="text-white text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
+            محصولی از شرکت دانش بنیان <span className="text-yellow-300">کارا</span>
+          </h1>
+          <p className="text-white/90 text-lg max-w-xl mx-auto">
+            سالن‌های مرغداری خود را از راه دور مدیریت کنید و از همه چیز باخبر باشید.
+          </p>
+        </div>
+      </aside>
     </div>
   );
 }
