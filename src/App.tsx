@@ -12,7 +12,7 @@ import './coreui-custom.css'   // your overrides
 
 export default function App() {
   return (
-    <div dir="rtl" style={{display:'flex', minHeight:'100vh', background:'#f8fafc'}}>
+    <div dir="rtl" style={{minHeight:'100vh', background:'#f8fafc'}}>
 
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -1,6 +1,8 @@
 // src/layouts/AppLayout.tsx
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import DashboardTop from "../components/DashboardTop";
 
 const navItems = [
   { key: "automation", label: "اتوماسیون", icon: (
@@ -55,15 +57,35 @@ const navItems = [
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [active, setActive] = useState<string>("status");
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+
+  // Reserve space for the fixed header and for the fixed right sidebar
+  // tweak values if you change header/sidebar widths
+  const headerHeight = 64; // if mobile header is 56 it's still fine
+  const sidebarPaddingRight = collapsed ? 72 : 288;
 
   return (
     <div className="flex h-screen">
-      <Sidebar items={navItems} activeKey={active} onNavigate={(k) => setActive(k)} />
-      <main className="flex-1 overflow-auto bg-gray-50">
-        {/* topbar (optional) */}
-        <div className="p-4 border-b bg-white">
-          <div className="max-w-7xl mx-auto">Topbar — active: {active}</div>
-        </div>
+      {/* pass setCollapsed so Sidebar and Header share control */}
+      <Sidebar
+        items={navItems}
+        activeKey={active}
+        onNavigate={(k) => setActive(k)}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+      />
+
+      <main
+        className="flex-1 overflow-auto bg-gray-50"
+        // keep content below the fixed header and away from the fixed right sidebar
+        style={{
+          paddingTop: headerHeight,
+          paddingRight: sidebarPaddingRight,
+        }}
+      >
+        <Header collapsed={collapsed} setCollapsed={setCollapsed} />
+
+
 
         {/* content */}
         <div className="p-6 max-w-7xl mx-auto">{children}</div>
