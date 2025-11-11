@@ -2,6 +2,8 @@
 import React from "react";
 import TemperatureChartCard from "./TemperatureChartCard";
 import TempDistributionCard from "./TempDistributionCard";
+import SensorTemperatureStatusCard from "./SensorTemperatureStatusCard";
+
 
 type DataPoint = { timestamp: string; inside: number; outside: number };
 type Bucket = { label: string; count: number; avg?: number };
@@ -46,6 +48,10 @@ export default function DashboardReports({
           <TempDistributionCard data={distData ?? sampleDist} />
           {loading && <div className="text-xs text-gray-500 mt-2">در حال بارگذاری توزیع...</div>}
         </div>
+
+        <div className="md:col-span-12 space-y-6">
+  <SensorTemperatureStatusCard safeRange={{ min: 18, max: 26 }} />
+</div>
       </div>
     </div>
   );
